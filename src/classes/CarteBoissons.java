@@ -1,7 +1,11 @@
 package classes;
 
-public class CarteBoissons extends Carte{
-    CarteBoissons(){
-        super();
+import java.util.ArrayList;
+import java.util.List;
+
+public class CarteBoissons {
+    static List<Consommable> listecons = new ArrayList<>();
+    public CarteBoissons(){
+
     }
 }

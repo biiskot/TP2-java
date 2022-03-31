@@ -4,30 +4,65 @@ import java.util.*;
 import java.util.Map;
 
 public class Inventaire {
-    Map<String,Ingredient> stockIngredients = new TreeMap<String,Ingredient>();
+
+    //Map qui associe un ingrédient à sa quantité:
+    Map<String,Integer> stockIngredients = new TreeMap<String,Integer>();
 
     public Inventaire(){
-        stockIngredients.put("tomate",new Ingredient("tomate", 10));
-        stockIngredients.put("salade",new Ingredient("salade", 10));
-        stockIngredients.put("oignon",new Ingredient("oignon", 10));
-        stockIngredients.put("champignon",new Ingredient("champignon", 10));
-        stockIngredients.put("pain_burger",new Ingredient("pain_burger", 10));
-        stockIngredients.put("steak",new Ingredient("steak", 10));
-        stockIngredients.put("pate_pizza",new Ingredient("pate_pizza", 10));
-        stockIngredients.put("fromage",new Ingredient("fromage", 10));
-        stockIngredients.put("saucisse",new Ingredient("saucisse", 10));
+        int baseQtte = 10;
+        stockIngredients.put("tomate", baseQtte);
+        stockIngredients.put("salade",baseQtte);
+        stockIngredients.put("oignon",baseQtte);
+        stockIngredients.put("champignon",baseQtte);
+        stockIngredients.put("pain_burger",baseQtte);
+        stockIngredients.put("steak",baseQtte);
+        stockIngredients.put("pate_pizza",baseQtte);
+        stockIngredients.put("fromage",baseQtte);
+        stockIngredients.put("saucisse",baseQtte);
+        stockIngredients.put("biere",baseQtte);
+        stockIngredients.put("cidre",baseQtte);
+        stockIngredients.put("eau",baseQtte);
+        stockIngredients.put("jus",baseQtte);
+        stockIngredients.put("limonade",baseQtte);
     }
 
-    void addItem(String name,int qtty) {
+    public void addItem(String name,int qty) {
         //On vérifie si l'ingrédient n'existe pas déjà dans le stock :
         if(!stockIngredients.containsKey(name)) {
-            stockIngredients.put(name, new Ingredient(name, qtty));
+            stockIngredients.put(name,qty);
         }
+        //Sinon on ajoute simplement le nombre d'item
         else {
-          stockIngredients.get(name).quantite += qtty;
+            int newQty =  stockIngredients.get(name)+qty;
+
+            if(newQty < 0) {
+                newQty = 0;
+                //Empêche d'avoir une quantité négative
+            }
+            else{
+                //On remplace par la bonne quantité :
+                stockIngredients.replace(name,newQty);
+            }
         }
     }
-    void removeItem(String name){
-        stockIngredients.get(name).quantite = 0;
+    public void removeItem(String name,int qty){
+
+        //Check si on a assez de l'ingrédient pour le plat et si l'ingredient existe
+        if(stockIngredients.get(name) >= qty && stockIngredients.containsKey(name)) {
+            int newQty = stockIngredients.get(name) - qty;
+
+            if (newQty >= 0) {
+                //On remplace par la bonne quantité :
+                stockIngredients.replace(name, newQty);
+
+            } else {
+                newQty = 0; // On met à 0 si quantité négative
+                stockIngredients.replace(name, newQty);
+                //Ne devrait pas être lu puisque la quantité est check au-dessus
+            }
+        }
+        else{
+            System.out.println("Quantité de " + name + " insuffisante pour préparer le plat, ou "+name+" n'est pas un ingrédient");
+        }
     }
 }

@@ -1,7 +1,7 @@
 package classes;
 
-public class CartePlats extends Carte {
+public class CartePlats{
     CartePlats(){
-        super();
+
     }
 }

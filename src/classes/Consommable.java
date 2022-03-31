@@ -2,12 +2,11 @@ package classes;
 
 public abstract class Consommable{
     static int prix;
-    static String nom;
-    String allergenes;
-    int quantite;
+    static String name;
 
-    Consommable(){
-
+    public Consommable(String name, int prix){
+        Consommable.name = name;
+        Consommable.prix = prix;
     }
 }
 
