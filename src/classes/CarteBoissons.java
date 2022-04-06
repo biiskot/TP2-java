@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarteBoissons {
-    static List<Consommable> listecons = new ArrayList<>();
+    //public static List<Consommable> listeboissons = new ArrayList<>();
     public CarteBoissons(){
 
     }
