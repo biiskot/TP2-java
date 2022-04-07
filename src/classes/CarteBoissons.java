@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarteBoissons {
-    //public static List<Consommable> listeboissons = new ArrayList<>();
+    public  List<String> listeboissons = new ArrayList<>();
     public CarteBoissons(){
-
+        listeboissons.add("biere");
+        listeboissons.add("cidre");
+        listeboissons.add("eau");
+        listeboissons.add("jus");
+        listeboissons.add("limonade");
     }
 }

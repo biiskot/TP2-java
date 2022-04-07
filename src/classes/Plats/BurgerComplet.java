@@ -6,8 +6,7 @@ import com.company.Main;
 public class BurgerComplet extends Consommable {
     public BurgerComplet(){
             super("burger_complet",12);
-        }
-        public void updateStock(){
+
             Main.stock.removeItem("pain_burger",1);
             Main.stock.removeItem("tomate",1);
             Main.stock.removeItem("salade",1);

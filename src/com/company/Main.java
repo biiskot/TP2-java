@@ -1,9 +1,10 @@
 package com.company;
 
-import classes.CarteBoissons;
-import classes.CartePlats;
-import classes.Consommable;
-import classes.Inventaire;
+import classes.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -42,30 +43,88 @@ public class Main {
         }
     }
     static void priseCommande(Scanner scanner){
-        System.out.println("--- PRISE DE COMMANDE ---\n");
-        System.out.println("--- Appuyez sur la touche correspondante au plat pour l'ajouter a la commande ---\n");
-        int i = 0;
-        for(Consommable n : cartePlats.listeplats){
-            i++;
-            System.out.println(i +" "+ n.name);
+        boolean boolFin = false;
+        while(!boolFin) {
+            System.out.println("--- PRISE DE COMMANDE ---");
+            System.out.println("--- Appuyez sur la touche correspondante au plat pour l'ajouter a la commande ---\n");
+            System.out.println("------");
+            stock.afficherStock();
+            System.out.println("------");
+
+            int i = 0;
+            for (String n : cartePlats.listeplats) {
+                i++;
+                System.out.println(i + " " + n);
+            }
+            System.out.println("---------");
+            for (String n : carteBoissons.listeboissons) {
+                i++;
+                System.out.println(i + " " + n);
+            }
+            int choixConso = scanner.nextInt();
+
+            if(choixConso >=0) {
+                FactoryConsommable.Build(cartePlats.listeplats.get(choixConso - 1));//on build la conso voulue
+                //Ajouter le plat à la preparation pour pouvoir le suivre dans l'ecran associé
+            }
+            else{
+                System.out.println("Mauvaise entry");
+            }
+
+            System.out.println("Commande terminée ? \n Y : Oui\n N: Non");
+            char finCommande = scanner.next().charAt(0); // On lit le caractère
+
+            if (finCommande == 'Y') {
+                boolFin = true; //Si commande finie on sort de la boucle
+            }
         }
-        int choixPlat = scanner.nextInt();
     }
+    
     static void afficherCuisine(Scanner scanner){
         System.out.println("--- CUISINE - PREPARATION ---");
     }
+
     static void afficherBar(Scanner scanner){
         System.out.println("--- BAR - PREPARATION ---");
     }
+
     static void monitorEmployees(Scanner scanner){
         System.out.println("--- MONITORING RESTAURANT ---");
     }
+
     static void manageEmployees(Scanner scanner){
         System.out.println("--- AJOUT OU RETRAIT D'EMPLOYES ---");
     }
+
     static void manageStock(Scanner scanner){
-        System.out.println("--- GERER LE STOCK ---");
+        System.out.println("--- GERER LE STOCK ---\n");
+        System.out.println(" 1 - AJOUTER");
+        System.out.println("2 - RETIRER");
+        int choix = scanner.nextInt();
+        int i = 0;
+        List<String> tabtmp = new ArrayList<>();
+
+        System.out.println("Choisissez un ingredient");
+        for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
+            tabtmp.add(n.getKey());
+            i++;
+            System.out.println(i +" "+ n);
+        }
+        int choixIng = scanner.nextInt();
+
+        System.out.println("Choisissez la quantité à ajouter ou retirer\n==> ");
+
+        int qty = scanner.nextInt();
+
+        if(choix == 1){
+           stock.addItem(tabtmp.get(choixIng-1),qty);
+        }
+        else if(choix == 2){
+          stock.removeItem(tabtmp.get(choixIng-1),qty);
+        }
+        stock.afficherStock();
     }
+
     static void manageDayTeam(Scanner scanner){
         System.out.println("--- PROGRAMMATION EMPLOYES POUR LA SOIREE ---");
     }

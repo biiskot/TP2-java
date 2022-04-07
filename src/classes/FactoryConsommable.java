@@ -4,7 +4,7 @@ import classes.Boissons.*;
 import classes.Plats.*;
 
 public class FactoryConsommable{
-    Consommable FactoryConsommable(String name){
+   public static Consommable Build(String name){
         switch(name) {
             case "pizza" -> {
                 return new Pizza();

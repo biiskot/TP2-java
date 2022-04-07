@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartePlats{
-    public List<Consommable> listeplats = new ArrayList<>();
+    public List<String> listeplats = new ArrayList<>();
     public CartePlats(){
-        listeplats.add(new BurgerComplet());
-        listeplats.add(new BurgerSalade());
-        listeplats.add(new BurgerViande());
-        listeplats.add(new Pizza());
-        listeplats.add(new PizzaReine());
-        listeplats.add(new PizzaSaucisse());
-        listeplats.add(new PotageChampi());
-        listeplats.add(new PotageOignon());
-        listeplats.add(new PotageTomate());
-        listeplats.add(new Salade());
-        listeplats.add(new SaladeTomate());
+        listeplats.add("burger_complet");
+        listeplats.add("burger_salade");
+        listeplats.add("burger_viande");
+        listeplats.add("pizza");
+        listeplats.add("pizza_reine");
+        listeplats.add("pizza_saucisse");
+        listeplats.add("potage_champi");
+        listeplats.add("potage_oignon");
+        listeplats.add("potage_tomate");
+        listeplats.add("salade");
+        listeplats.add("salade_tomate");
     }
 }

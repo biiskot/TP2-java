@@ -6,24 +6,24 @@ import java.util.Map;
 public class Inventaire {
 
     //Map qui associe un ingrédient à sa quantité:
-    Map<String,Integer> stockIngredients = new TreeMap<String,Integer>();
+    public Map<String,Integer> stockIngredients = new TreeMap<String,Integer>();
 
     public Inventaire(){
         int baseQtte = 10;
-        stockIngredients.put("tomate", baseQtte);
-        stockIngredients.put("salade",baseQtte);
-        stockIngredients.put("oignon",baseQtte);
-        stockIngredients.put("champignon",baseQtte);
+        stockIngredients.put("tomate", baseQtte*2);
+        stockIngredients.put("salade",baseQtte*2);
+        stockIngredients.put("oignon",baseQtte*2);
+        stockIngredients.put("champignon",baseQtte*2);
         stockIngredients.put("pain_burger",baseQtte);
         stockIngredients.put("steak",baseQtte);
         stockIngredients.put("pate_pizza",baseQtte);
-        stockIngredients.put("fromage",baseQtte);
+        stockIngredients.put("fromage",baseQtte*2);
         stockIngredients.put("saucisse",baseQtte);
-        stockIngredients.put("biere",baseQtte);
-        stockIngredients.put("cidre",baseQtte);
-        stockIngredients.put("eau",baseQtte);
-        stockIngredients.put("jus",baseQtte);
-        stockIngredients.put("limonade",baseQtte);
+        stockIngredients.put("biere",baseQtte*2);
+        stockIngredients.put("cidre",baseQtte*2);
+        stockIngredients.put("eau",baseQtte*2);
+        stockIngredients.put("jus",baseQtte*2);
+        stockIngredients.put("limonade",baseQtte*2);
     }
 
     public void addItem(String name,int qty) {
@@ -63,6 +63,12 @@ public class Inventaire {
         }
         else{
             System.out.println("Quantité de " + name + " insuffisante pour préparer le plat, ou "+name+" n'est pas un ingrédient");
+        }
+    }
+    public void afficherStock(){
+        System.out.println("Stock actuel :");
+        for(Map.Entry<String, Integer> n : stockIngredients.entrySet()){
+            System.out.println(n.getKey() + ":" + n.getValue());
         }
     }
 }
