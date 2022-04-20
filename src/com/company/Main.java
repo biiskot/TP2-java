@@ -36,13 +36,14 @@ public class Main {
             case 1 -> priseCommande(scanner);
             case 2 -> afficherCuisine(scanner);
             case 3 -> afficherBar(scanner);
-            case 4 -> monitorEmployees(scanner);
+            case 4 -> monitorRestaurant(scanner);
             case 5 -> manageEmployees(scanner);
             case 6 -> manageStock(scanner);
             case 7 -> manageDayTeam(scanner);
         }
     }
     static void priseCommande(Scanner scanner){
+        List<Integer> commande = new ArrayList<>();
         boolean boolFin = false;
         while(!boolFin) {
             System.out.println("--- PRISE DE COMMANDE ---");
@@ -64,8 +65,7 @@ public class Main {
             int choixConso = scanner.nextInt();
 
             if(choixConso >=0) {
-                FactoryConsommable.Build(cartePlats.listeplats.get(choixConso - 1));//on build la conso voulue
-                //Ajouter le plat à la preparation pour pouvoir le suivre dans l'ecran associé
+                commande.add(choixConso);// On ajoute l'indice des plats à commander dans la liste
             }
             else{
                 System.out.println("Mauvaise entry");
@@ -74,12 +74,13 @@ public class Main {
             System.out.println("Commande terminée ? \n Y : Oui\n N: Non");
             char finCommande = scanner.next().charAt(0); // On lit le caractère
 
-            if (finCommande == 'Y') {
+            if (finCommande == 'Y' || finCommande == 'y') {
+                preparerCommande(commande);//On commence la préparation de la commande quand la prise est finie
                 boolFin = true; //Si commande finie on sort de la boucle
             }
         }
     }
-    
+
     static void afficherCuisine(Scanner scanner){
         System.out.println("--- CUISINE - PREPARATION ---");
     }
@@ -88,8 +89,22 @@ public class Main {
         System.out.println("--- BAR - PREPARATION ---");
     }
 
-    static void monitorEmployees(Scanner scanner){
+    static void monitorRestaurant(Scanner scanner){
         System.out.println("--- MONITORING RESTAURANT ---");
+        int nbCommandes, chiffreAffaire;
+
+        System.out.println("Appuyez sur P si vous voulez imprimer la liste de course pour demain");
+        char print = scanner.next().charAt(0);
+
+        if(print == 'P' || print == 'p'){
+            System.out.println("Liste de courses : ");
+            for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
+                if(n.getValue()!=stock.baseQtte){
+                    //On affiche les aliments à acheter en focntion du manque
+                    System.out.println(n.getKey() + " : " + (stock.baseQtte-n.getValue()));
+                }
+            }
+        }
     }
 
     static void manageEmployees(Scanner scanner){
@@ -98,21 +113,21 @@ public class Main {
 
     static void manageStock(Scanner scanner){
         System.out.println("--- GERER LE STOCK ---\n");
-        System.out.println(" 1 - AJOUTER");
+        System.out.println("1 - AJOUTER");
         System.out.println("2 - RETIRER");
         int choix = scanner.nextInt();
         int i = 0;
         List<String> tabtmp = new ArrayList<>();
 
-        System.out.println("Choisissez un ingredient");
+        System.out.println("Choisissez un ingrédient");
         for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
             tabtmp.add(n.getKey());
             i++;
-            System.out.println(i +" "+ n);
+            System.out.println(i +" " + n);
         }
         int choixIng = scanner.nextInt();
 
-        System.out.println("Choisissez la quantité à ajouter ou retirer\n==> ");
+        System.out.println("Entrez la quantité à ajouter ou retirer ==> ");
 
         int qty = scanner.nextInt();
 
@@ -127,6 +142,12 @@ public class Main {
 
     static void manageDayTeam(Scanner scanner){
         System.out.println("--- PROGRAMMATION EMPLOYES POUR LA SOIREE ---");
+    }
+
+    static void preparerCommande(List<Integer>list){
+        for(int n : list){
+            FactoryConsommable.Build(cartePlats.listeplats.get(n - 1));//on build la conso voulue
+        }
     }
 }
 

@@ -11,4 +11,5 @@ public class Pizza extends Consommable {
         Main.stock.removeItem("tomate",1);
         Main.stock.removeItem("fromage",1);
     }
+
 }
