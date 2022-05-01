@@ -6,7 +6,7 @@ import java.util.Map;
 public class Inventaire {
 
     //Map qui associe un ingrédient à sa quantité:
-    public Map<String,Integer> stockIngredients = new TreeMap<String,Integer>();
+    public Map<String,Integer> stockIngredients = new TreeMap<>();
     public int baseQtte = 10;
 
     public Inventaire(){

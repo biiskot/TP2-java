@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartePlats{
-    public List<String> listeplats = new ArrayList<>();
+    final public List<String> listeplats = new ArrayList<>();
     public CartePlats(){
         listeplats.add("burger_complet");
         listeplats.add("burger_salade");
