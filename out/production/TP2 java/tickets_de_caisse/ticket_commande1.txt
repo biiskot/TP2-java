@@ -1,0 +1,4 @@
+Commande n° : 1
+---Biere --- 5 €
+
+TOTAL : 5

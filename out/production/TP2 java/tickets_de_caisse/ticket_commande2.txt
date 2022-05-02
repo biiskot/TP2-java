@@ -1,0 +1,5 @@
+Commande n° : 2
+---BurgerSalade --- 12 €
+---Cidre --- 5 €
+
+TOTAL : 17
