@@ -1,5 +1,5 @@
 Commande n° : 2
----BurgerSalade --- 12 €
----Cidre --- 5 €
+---BurgerComplet --- 12 €
+---Limonade --- 4 €
 
-TOTAL : 17
+TOTAL : 16

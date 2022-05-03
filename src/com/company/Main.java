@@ -16,11 +16,13 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Bienvenue dans votre logiciel de gestion pour restaurateur, selectionnez une action pour commencer");
+        System.out.println(cartePlats.listeplats.size());
+
         selectScreen();
     }
 
     static void selectScreen(){
-        int choixEcran = 0;
+        int choixEcran;
         System.out.println("Quel écran souhaitez vous afficher?");
         System.out.println("1- Ecran prise de commande");
         System.out.println("2- Ecran cuisine");
@@ -29,12 +31,12 @@ public class Main {
         System.out.println("5- Gérer l'équipe");
         System.out.println("6- Gérer le stock");
         System.out.println("7- Gérer équipe du jour");
+        System.out.println("0- Quitter le programme");
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("==> ");
         if(scanner.hasNextInt()) {
             choixEcran = scanner.nextInt();
-            System.out.println("Vous avez choisi l'écran: " + choixEcran+"\n");
             switch(choixEcran){
                 //Appel de la bonne fonction en fonction de l'entree utilisateur
                 case 1 -> priseCommande(scanner);
@@ -44,6 +46,7 @@ public class Main {
                 case 5 -> manageEmployees(scanner);
                 case 6 -> manageStock(scanner);
                 case 7 -> manageDayTeam(scanner);
+                case 0 -> System.exit(0);
             }
         }
         else{
@@ -80,10 +83,23 @@ public class Main {
             }
                 if (choix > 0) {
                     commande.listeIdsConsos.add(choix - 1);// On ajoute l'indice des plats à commander dans la liste
+                    if(choix >= cartePlats.listeplats.size()+1){
+                        commande.containsBoisson = true;
+                    }
+                    if(choix < cartePlats.listeplats.size()+1){
+                        commande.containsPlat = true;
+                    }
                 }
                 //          --- CHECK SI COMMANDE FINIE--
                 else if (choix == 0) {
                     System.out.println("Commande terminée");
+                    //Check si contient boisson ou plat
+                    if(!commande.containsPlat){
+                        commande.platsReady = true; //On dit que les plats sont prêts s'il n'y en a pas pour éviter de passer par l'écran cuisine
+                    }
+                    if(!commande.containsBoisson){
+                        commande.boissonsReady = true; //Idem pour les boissons
+                    }
                     //On ajoute la commande a la liste à preparer
                     ordersToPrepare.put(commande.id, commande);
                     //On incrémente le nb de commandes pour les id/numeros de commandes
@@ -105,36 +121,34 @@ public class Main {
 
     static void afficherCuisine(Scanner scanner){
         System.out.println("--- CUISINE - PREPARATION ---");
-        boolean containsPlat = false;
+        boolean smthngtoprepare = false;
         if(ordersToPrepare.size()>0) {
             //Afficher les plats pour la commande
             for (Map.Entry<Integer, Commande> n : ordersToPrepare.entrySet()) {
-                if(!n.getValue().platsReady) {
-                    n.getValue().platsReady = true;
                     System.out.println("Commande n°" + n.getKey() + " : ");
-                    for (int i : n.getValue().listeIdsConsos) {
-                        if (i < cartePlats.listeplats.size()) { //Affiche que les plats car id des boissons > 10
-                            containsPlat = true;
-                            n.getValue().platsReady = false;
-                            System.out.println("-->" + cartePlats.listeplats.get(i));
+                    if(n.getValue().containsPlat){
+                        smthngtoprepare = true;
+                        for (int i : n.getValue().listeIdsConsos) {
+                            if (i < cartePlats.listeplats.size()) { //Affiche que les plats car id des boissons > 10
+                                System.out.println("-->" + cartePlats.listeplats.get(i));
+                            }
                         }
                     }
-                }
+                    else{
+                        System.out.println("--> Pas de plats à préparer pour cette commande");
+                    }
             }
-            if(containsPlat) {
+            if(smthngtoprepare) {
                 System.out.println("Entrez le numéro de commande pour laquelle tous les plats sont prêts : ");
                 int choixCommande = scanner.nextInt();
                 ordersToPrepare.get(choixCommande).platsReady = true;//Plats prêts
                 ordersToPrepare.get(choixCommande).servirPlats(cartePlats);//On fait le service des plats
                 //Une fois pret, check si les boissons de la commmande sont pretes aussi
-                if (checkWholeOrder(ordersToPrepare.get(choixCommande))){
-                    finaliserCommande(choixCommande,ordersToPrepare.get(choixCommande));
+                if (checkWholeOrder(ordersToPrepare.get(choixCommande))) {
+                    finaliserCommande(choixCommande, ordersToPrepare.get(choixCommande));
                 } else {
                     System.out.println("Les boissons pour cette commande ne sont pas prêtes ! Allez réveiller le barman");
                 }
-            }
-            else {
-                System.out.println("-->Pas de plat à préparer");
             }
         }
         else{
@@ -151,37 +165,35 @@ public class Main {
     }
 
     static void afficherBar(Scanner scanner){
+        boolean smthngtoprepare = false;
         System.out.println("--- BAR - PREPARATION ---");
-        boolean containsBoisson = false;
         if(ordersToPrepare.size()>0) {
-            //Afficher les boissons pour la commande n et booleen pour indiquer quand cest pret
+            //Afficher les plats pour la commande
             for (Map.Entry<Integer, Commande> n : ordersToPrepare.entrySet()) {
-                if(!n.getValue().boissonsReady) {
-                    n.getValue().boissonsReady = true;
-                    System.out.println("Commande n°" + n.getKey() + " : ");
+                System.out.println("Commande n°" + n.getKey() + " : ");
+                if(n.getValue().containsBoisson){
                     for (int i : n.getValue().listeIdsConsos) {
-                        if (i >= cartePlats.listeplats.size()) { //Affiche que les boissons car id des boissons > 10
-                            containsBoisson = true;
-                            n.getValue().boissonsReady = false;
-                            System.out.println("-->" + carteBoissons.listeboissons.get(i - 11));
+                        if (i >= cartePlats.listeplats.size()) { //Affiche que les boissons
+                            smthngtoprepare = true;
+                            System.out.println("-->" + carteBoissons.listeboissons.get(i-cartePlats.listeplats.size()));
                         }
                     }
                 }
-            }
-            if(containsBoisson){
-                System.out.println("Entrez le numéro de commande pour laquelle toutes les boissons sont prêtes : ");
-                int choixCommande = scanner.nextInt();
-                ordersToPrepare.get(choixCommande).boissonsReady = true; //Boissons prêtes
-                ordersToPrepare.get(choixCommande).servirBoissons(carteBoissons);//On fait le service des boissons
-                //Une fois servi, check si les plats de la commande sont prets aussi
-                if (checkWholeOrder(ordersToPrepare.get(choixCommande))) {
-                    finaliserCommande(choixCommande,ordersToPrepare.get(choixCommande));
-                } else {
-                    System.out.println("Les plats pour cette commande ne sont pas prêts ! Allez réveiller le cuistot");
+                else{
+                    System.out.println("--> Pas de boissons à préparer pour cette commande");
                 }
             }
-            else {
-                System.out.println("-->Pas de boisson à préparer");
+           if(smthngtoprepare) {
+                System.out.println("Entrez le numéro de commande pour laquelle tous les plats sont prêts : ");
+                int choixCommande = scanner.nextInt();
+                ordersToPrepare.get(choixCommande).boissonsReady = true;//Boissons prêtes
+                ordersToPrepare.get(choixCommande).servirBoissons(carteBoissons);//On fait le service des boissons
+                //Une fois pret, check si les plats de la commmande sont prêts aussi
+                if (checkWholeOrder(ordersToPrepare.get(choixCommande))) {
+                    finaliserCommande(choixCommande, ordersToPrepare.get(choixCommande));
+                } else {
+                    System.out.println("Les plats pour cette commande ne sont pas prêts ! Allez réveiller le barman");
+                }
             }
         }
         else{
@@ -198,42 +210,44 @@ public class Main {
     }
 
     static void monitorRestaurant(Scanner scanner){
-        String element,date;
+        String element, date;
+        Scanner tempsc = new Scanner(System.in);
 
         System.out.println("--- MONITORING RESTAURANT ---");
-
-        System.out.println("Nombre de commandes : "+nbCommande+" / C.A : "+chiffreAffaire);
-
+        System.out.println("Nombre de commandes : "+nbCommande+" - C.A de la journée: "+chiffreAffaire);
 
         System.out.println("Appuyez sur P si vous voulez imprimer la liste de course pour demain, B sinon pour retourner au sélécteur d'écran");
         char print = scanner.next().charAt(0);
 
         if(print == 'P' || print == 'p'){
             System.out.println("--- Entrez la date du jour JJ-MM-AA (pas de '/') ---");
-            date = scanner.nextLine();
+            System.out.print("==>");
+            date = tempsc.nextLine();
 
             Path path = Paths.get("src/listes_course/liste_"+date+".txt");
-            try (FileOutputStream stream = new FileOutputStream(path.toString())){
-            } catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
 
-            System.out.println("Liste de courses : ");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
-                for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
-                    if(n.getValue()!=stock.baseQtte){
-                        //On affiche les aliments à acheter en fonction du manque
-                        element=(n.getKey() + " : " + (stock.baseQtte-n.getValue())); //Trouve la quantité à acheter par rapport à la quantité de base
-                        System.out.println(element);
-                        //Ecriture :
+            try (FileOutputStream stream = new FileOutputStream(path.toString())){
+                System.out.println("Liste de courses : ");
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
+                    for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
+                        if(n.getValue()!=stock.baseQtte){
+                            //On affiche les aliments à acheter en fonction du manque
+                            element=(n.getKey() + " : " + (stock.baseQtte-n.getValue())); //Trouve la quantité à acheter par rapport à la quantité de base
+                            System.out.println(element);
+                            //Ecriture :
                             writer.write(element);
                             writer.newLine();
                         }
+                    }
+                    System.out.println("\nEcriture effectuée");
                 }
-                System.out.println("\nEcriture effectuée");
-            }
-            catch (IOException e) {
+
+                catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
             }
@@ -325,12 +339,17 @@ public class Main {
     }
     static void goBack(Scanner sc){
         System.out.println("Appuyez sur B si vous voulez retourner en arrière");
-        char choix = sc.next().charAt(0);
-        if(choix == 'B' || choix == 'b'){
-            selectScreen();
+        try{
+            char choix = sc.next().charAt(0);
+            if(choix == 'B' || choix == 'b'){
+                selectScreen();
+            }
+        }
+        catch(Exception e){
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
-
 }
 
 

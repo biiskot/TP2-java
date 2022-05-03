@@ -8,7 +8,7 @@ public class Commande {
     public List<String>ticketCaisse = new ArrayList<>();
     public int id;
     public int addition;
-    public boolean platsReady = false, boissonsReady = false;
+    public boolean platsReady = false, boissonsReady = false, containsBoisson = false, containsPlat = false;
     public Commande(int id){
         this.id = id;
     }
