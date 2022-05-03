@@ -4,29 +4,32 @@ import java.util.*;
 import java.util.Map;
 
 public class Inventaire {
+    public static int baseQtte = 10;
 
     //Map qui associe un ingrédient à sa quantité:
-    public Map<String,Integer> stockIngredients = new TreeMap<>();
-    public int baseQtte = 10;
+    public static Map<String,Integer> stockIngredients = new TreeMap<>(){
+         {
+            put("tomate", baseQtte);
+            put("salade", baseQtte);
+            put("oignon", baseQtte);
+            put("champignon", baseQtte);
+            put("pain_burger", baseQtte);
+            put("steak", baseQtte);
+            put("pate_pizza", baseQtte);
+            put("fromage", baseQtte);
+            put("saucisse", baseQtte);
+            put("galette", baseQtte);
+            put("riz", baseQtte);
+            put("poulet", baseQtte);
+            put("biere", baseQtte);
+            put("cidre", baseQtte);
+            put("eau", baseQtte);
+            put("jus", baseQtte);
+            put("limonade", baseQtte);
+        }
+    };
 
-    public Inventaire(){
-        stockIngredients.put("tomate", baseQtte);
-        stockIngredients.put("salade",baseQtte);
-        stockIngredients.put("oignon",baseQtte);
-        stockIngredients.put("champignon",baseQtte);
-        stockIngredients.put("pain_burger",baseQtte);
-        stockIngredients.put("steak",baseQtte);
-        stockIngredients.put("pate_pizza",baseQtte);
-        stockIngredients.put("fromage",baseQtte);
-        stockIngredients.put("saucisse",baseQtte);
-        stockIngredients.put("biere",baseQtte);
-        stockIngredients.put("cidre",baseQtte);
-        stockIngredients.put("eau",baseQtte);
-        stockIngredients.put("jus",baseQtte);
-        stockIngredients.put("limonade",baseQtte);
-    }
-
-    public void addItem(String name,int qty) {
+    public static void addItem(String name,int qty) {
         //On vérifie si l'ingrédient n'existe pas déjà dans le stock :
         if(!stockIngredients.containsKey(name)) {
             stockIngredients.put(name,qty);
@@ -45,7 +48,7 @@ public class Inventaire {
             }
         }
     }
-    public void removeItem(String name,int qty){
+    public static void removeItem(String name,int qty){
 
         //Check si on a assez de l'ingrédient pour le plat et si l'ingredient existe
         if(stockIngredients.get(name) >= qty && stockIngredients.containsKey(name)) {
@@ -65,7 +68,7 @@ public class Inventaire {
             System.out.println("Quantité de " + name + " insuffisante pour préparer le plat, ou "+name+" n'est pas un ingrédient");
         }
     }
-    public void afficherStock(){
+    public static void afficherStock(){
         System.out.println("Stock actuel :");
         for(Map.Entry<String, Integer> n : stockIngredients.entrySet()){
             System.out.println(n);

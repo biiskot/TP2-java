@@ -8,15 +8,12 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
-    public static Inventaire stock = new Inventaire();
-    public static CartePlats cartePlats = new CartePlats();
-    public static CarteBoissons carteBoissons = new CarteBoissons();
     public static int nbCommande =0,chiffreAffaire=0;
     public static Map<Integer,Commande> ordersToPrepare = new HashMap<>();//Stocke les commandes à preparer en fonction de leur indiice pour cuisine et bar
 
     public static void main(String[] args) {
         System.out.println("Bienvenue dans votre logiciel de gestion pour restaurateur, selectionnez une action pour commencer");
-        System.out.println(cartePlats.listeplats.size());
+        System.out.println(CartePlats.listeplats.size());
 
         selectScreen();
     }
@@ -61,12 +58,12 @@ public class Main {
         int choix = -1;
         System.out.println("--- PRISE DE COMMANDE ---");
         int i = 0;
-        for (String n : cartePlats.listeplats) {
+        for (String n : CartePlats.listeplats) {
             i++;
             System.out.println(i + " " + n);
         }
         System.out.println("---------");
-        for (String n : carteBoissons.listeboissons) {
+        for (String n : CarteBoissons.listeboissons) {
             i++;
             System.out.println(i + " " + n);
         }
@@ -83,10 +80,10 @@ public class Main {
             }
                 if (choix > 0) {
                     commande.listeIdsConsos.add(choix - 1);// On ajoute l'indice des plats à commander dans la liste
-                    if(choix >= cartePlats.listeplats.size()+1){
+                    if(choix >= CartePlats.listeplats.size()+1){
                         commande.containsBoisson = true;
                     }
-                    if(choix < cartePlats.listeplats.size()+1){
+                    if(choix < CartePlats.listeplats.size()+1){
                         commande.containsPlat = true;
                     }
                 }
@@ -131,8 +128,8 @@ public class Main {
                     if (n.getValue().containsPlat) {
                         smthngtoprepare = true;
                         for (int i : n.getValue().listeIdsConsos) {
-                            if (i < cartePlats.listeplats.size()) { //Affiche que les plats car id des boissons > 10
-                                System.out.println("-->" + cartePlats.listeplats.get(i));
+                            if (i < CartePlats.listeplats.size()) { //Affiche que les plats car id des boissons > 10
+                                System.out.println("-->" + CartePlats.listeplats.get(i));
                             }
                         }
                     } else {
@@ -144,7 +141,7 @@ public class Main {
                 System.out.println("Entrez le numéro de commande pour laquelle tous les plats sont prêts : ");
                 int choixCommande = scanner.nextInt();
                 ordersToPrepare.get(choixCommande).platsReady = true;//Plats prêts
-                ordersToPrepare.get(choixCommande).servirPlats(cartePlats);//On fait le service des plats
+                ordersToPrepare.get(choixCommande).servirPlats();//On fait le service des plats
                 //Une fois pret, check si les boissons de la commmande sont pretes aussi
                 if (checkWholeOrder(ordersToPrepare.get(choixCommande))) {
                     finaliserCommande(choixCommande, ordersToPrepare.get(choixCommande));
@@ -176,9 +173,9 @@ public class Main {
                     System.out.println("Commande n°" + n.getKey() + " : ");
                     if (n.getValue().containsBoisson) {
                         for (int i : n.getValue().listeIdsConsos) {
-                            if (i >= cartePlats.listeplats.size()) { //Affiche que les boissons
+                            if (i >= CartePlats.listeplats.size()) { //Affiche que les boissons
                                 smthngtoprepare = true;
-                                System.out.println("-->" + carteBoissons.listeboissons.get(i - cartePlats.listeplats.size()));
+                                System.out.println("-->" + CarteBoissons.listeboissons.get(i - CartePlats.listeplats.size()));
                             }
                         }
                     } else {
@@ -190,7 +187,7 @@ public class Main {
                 System.out.println("Entrez le numéro de commande pour laquelle tous les plats sont prêts : ");
                 int choixCommande = scanner.nextInt();
                 ordersToPrepare.get(choixCommande).boissonsReady = true;//Boissons prêtes
-                ordersToPrepare.get(choixCommande).servirBoissons(carteBoissons);//On fait le service des boissons
+                ordersToPrepare.get(choixCommande).servirBoissons();//On fait le service des boissons
                 //Une fois pret, check si les plats de la commmande sont prêts aussi
                 if (checkWholeOrder(ordersToPrepare.get(choixCommande))) {
                     finaliserCommande(choixCommande, ordersToPrepare.get(choixCommande));
@@ -233,10 +230,10 @@ public class Main {
                 System.out.println("Liste de courses : ");
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
-                    for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
-                        if(n.getValue()!=stock.baseQtte){
+                    for(Map.Entry<String, Integer> n : Inventaire.stockIngredients.entrySet()){
+                        if(n.getValue()!=Inventaire.baseQtte){
                             //On affiche les aliments à acheter en fonction du manque
-                            element=(n.getKey() + " : " + (stock.baseQtte-n.getValue())); //Trouve la quantité à acheter par rapport à la quantité de base
+                            element=(n.getKey() + " : " + (Inventaire.baseQtte-n.getValue())); //Trouve la quantité à acheter par rapport à la quantité de base
                             System.out.println(element);
                             //Ecriture :
                             writer.write(element);
@@ -275,7 +272,7 @@ public class Main {
         List<String> tabtmp = new ArrayList<>();
 
         System.out.println("Choisissez un ingrédient");
-        for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
+        for(Map.Entry<String, Integer> n : Inventaire.stockIngredients.entrySet()){
             tabtmp.add(n.getKey());
             i++;
             System.out.println(i +" " + n);
@@ -287,12 +284,12 @@ public class Main {
         int qty = scanner.nextInt();
 
         if(choix == 1){
-           stock.addItem(tabtmp.get(choixIng-1),qty);
+           Inventaire.addItem(tabtmp.get(choixIng-1),qty);
         }
         else if(choix == 2){
-          stock.removeItem(tabtmp.get(choixIng-1),qty);
+          Inventaire.removeItem(tabtmp.get(choixIng-1),qty);
         }
-        stock.afficherStock();
+        Inventaire.afficherStock();
         goBack(scanner);
     }
 
@@ -307,7 +304,7 @@ public class Main {
         //puisque tout a été servi, on imprime le reçu
         //et on affiche le stock avec les ingrédients utilisés pour la commande
         imprimerTicket(c);
-        stock.afficherStock();
+        Inventaire.afficherStock();
 
         //On enleve la commande de ordersToPrepare
         ordersToPrepare.remove(idorder);

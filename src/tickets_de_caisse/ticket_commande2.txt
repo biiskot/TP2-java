@@ -1,5 +1,5 @@
 Commande n° : 2
----BurgerSalade --- 12 €
----Cidre --- 5 €
+---FajitasBoeuf --- 11 €
+---Eau --- 0 €
 
-TOTAL : 17€
+TOTAL : 11€

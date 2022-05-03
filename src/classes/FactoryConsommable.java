@@ -45,6 +45,12 @@ public class FactoryConsommable{
             case "potage_champignon" -> {
                 return new PotageChampi();
             }
+            case "fajitas_poulet" -> {
+                return new FajitasPoulet();
+            }
+            case "fajitas_boeuf" -> {
+                return new FajitasBoeuf();
+            }
 
             //BOISSONS :
             case "limonade" -> {
