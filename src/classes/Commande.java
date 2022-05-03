@@ -32,7 +32,7 @@ public void servirPlats(CartePlats cp){
         String conso;
         //On build
         for(int n : this.listeIdsConsos){
-          if (n < 11){
+          if (n < cp.listeplats.size()){
                 obj = FactoryConsommable.Build(cp.listeplats.get(n));
                 conso = obj.getClass().getSimpleName()+" --- "+obj.prix+" €";
                 this.addition+=obj.prix;

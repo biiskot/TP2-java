@@ -116,6 +116,7 @@ public class Main {
                 else {
                     System.out.println("Entry incorrect");
                 }
+                choix = -1;
         }while(!boolFin);
     }
 
@@ -125,18 +126,19 @@ public class Main {
         if(ordersToPrepare.size()>0) {
             //Afficher les plats pour la commande
             for (Map.Entry<Integer, Commande> n : ordersToPrepare.entrySet()) {
+                if(!n.getValue().platsReady) {
                     System.out.println("Commande n°" + n.getKey() + " : ");
-                    if(n.getValue().containsPlat){
+                    if (n.getValue().containsPlat) {
                         smthngtoprepare = true;
                         for (int i : n.getValue().listeIdsConsos) {
                             if (i < cartePlats.listeplats.size()) { //Affiche que les plats car id des boissons > 10
                                 System.out.println("-->" + cartePlats.listeplats.get(i));
                             }
                         }
-                    }
-                    else{
+                    } else {
                         System.out.println("--> Pas de plats à préparer pour cette commande");
                     }
+                }
             }
             if(smthngtoprepare) {
                 System.out.println("Entrez le numéro de commande pour laquelle tous les plats sont prêts : ");
@@ -170,17 +172,18 @@ public class Main {
         if(ordersToPrepare.size()>0) {
             //Afficher les plats pour la commande
             for (Map.Entry<Integer, Commande> n : ordersToPrepare.entrySet()) {
-                System.out.println("Commande n°" + n.getKey() + " : ");
-                if(n.getValue().containsBoisson){
-                    for (int i : n.getValue().listeIdsConsos) {
-                        if (i >= cartePlats.listeplats.size()) { //Affiche que les boissons
-                            smthngtoprepare = true;
-                            System.out.println("-->" + carteBoissons.listeboissons.get(i-cartePlats.listeplats.size()));
+                if(!n.getValue().boissonsReady){
+                    System.out.println("Commande n°" + n.getKey() + " : ");
+                    if (n.getValue().containsBoisson) {
+                        for (int i : n.getValue().listeIdsConsos) {
+                            if (i >= cartePlats.listeplats.size()) { //Affiche que les boissons
+                                smthngtoprepare = true;
+                                System.out.println("-->" + carteBoissons.listeboissons.get(i - cartePlats.listeplats.size()));
+                            }
                         }
+                    } else {
+                        System.out.println("--> Pas de boissons à préparer pour cette commande");
                     }
-                }
-                else{
-                    System.out.println("--> Pas de boissons à préparer pour cette commande");
                 }
             }
            if(smthngtoprepare) {
@@ -251,6 +254,9 @@ public class Main {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
             }
+        }
+        else if(print=='B' || print=='b'){
+            selectScreen();
         }
         goBack(scanner);
     }
@@ -325,7 +331,7 @@ public class Main {
                         writer.newLine();
                     }
                     writer.newLine();
-                    writer.write("TOTAL : "+c.addition);
+                    writer.write("TOTAL : "+c.addition+"€");
                    // writer.close(); pas utile avec try-with-ressources
                     System.out.println("Ecriture effectuée");
                 } catch (IOException e) {
@@ -338,11 +344,14 @@ public class Main {
         }
     }
     static void goBack(Scanner sc){
-        System.out.println("Appuyez sur B si vous voulez retourner en arrière");
+        System.out.println("Appuyez sur B pour retourner en arrière");
         try{
             char choix = sc.next().charAt(0);
             if(choix == 'B' || choix == 'b'){
                 selectScreen();
+            }
+            else {
+                goBack(sc);
             }
         }
         catch(Exception e){
