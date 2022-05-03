@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Commande {
-    public List<Integer> listeIdsConsos = new ArrayList<Integer>();
+    public List<Integer> listeIdsConsos = new ArrayList<>();
     public List<String>ticketCaisse = new ArrayList<>();
     public int id;
     public int addition;

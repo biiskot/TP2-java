@@ -198,6 +198,8 @@ public class Main {
     }
 
     static void monitorRestaurant(Scanner scanner){
+        String element,date;
+
         System.out.println("--- MONITORING RESTAURANT ---");
 
         System.out.println("Nombre de commandes : "+nbCommande+" / C.A : "+chiffreAffaire);
@@ -207,12 +209,33 @@ public class Main {
         char print = scanner.next().charAt(0);
 
         if(print == 'P' || print == 'p'){
+            System.out.println("--- Entrez la date du jour JJ-MM-AA (pas de '/') ---");
+            date = scanner.nextLine();
+
+            Path path = Paths.get("src/listes_course/liste_"+date+".txt");
+            try (FileOutputStream stream = new FileOutputStream(path.toString())){
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+
             System.out.println("Liste de courses : ");
-            for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
-                if(n.getValue()!=stock.baseQtte){
-                    //On affiche les aliments à acheter en fonction du manque
-                    System.out.println(n.getKey() + " : " + (stock.baseQtte-n.getValue()));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
+                for(Map.Entry<String, Integer> n : stock.stockIngredients.entrySet()){
+                    if(n.getValue()!=stock.baseQtte){
+                        //On affiche les aliments à acheter en fonction du manque
+                        element=(n.getKey() + " : " + (stock.baseQtte-n.getValue())); //Trouve la quantité à acheter par rapport à la quantité de base
+                        System.out.println(element);
+                        //Ecriture :
+                            writer.write(element);
+                            writer.newLine();
+                        }
                 }
+                System.out.println("\nEcriture effectuée");
+            }
+            catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
             }
         }
         goBack(scanner);
