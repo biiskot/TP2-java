@@ -1,5 +1,5 @@
 Commande n° : 1
 ---BurgerComplet --- 12 €
----Biere --- 5 €
+---FajitasPoulet --- 11 €
 
-TOTAL : 17€
+TOTAL : 23€

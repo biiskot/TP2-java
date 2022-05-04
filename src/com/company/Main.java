@@ -13,12 +13,11 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Bienvenue dans votre logiciel de gestion pour restaurateur, selectionnez une action pour commencer");
-        System.out.println(CartePlats.listeplats.size());
-
         selectScreen();
     }
 
     static void selectScreen(){
+        clearConsole();
         int choixEcran;
         System.out.println("Quel écran souhaitez vous afficher?");
         System.out.println("1- Ecran prise de commande");
@@ -42,7 +41,7 @@ public class Main {
                 case 4 -> monitorRestaurant(scanner);
                 case 5 -> manageEmployees(scanner);
                 case 6 -> manageStock(scanner);
-                case 7 -> manageDayTeam(scanner);
+               // case 7 -> manageDayTeam(scanner);
                 case 0 -> System.exit(0);
             }
         }
@@ -53,6 +52,7 @@ public class Main {
     }
 
     static void priseCommande(Scanner scanner){
+        clearConsole();
         Commande commande = new Commande(nbCommande+1); //+1 pour pas avoir de commande numéro 0
         boolean boolFin = false;
         int choix = -1;
@@ -118,6 +118,7 @@ public class Main {
     }
 
     static void afficherCuisine(Scanner scanner){
+        clearConsole();
         System.out.println("--- CUISINE - PREPARATION ---");
         boolean smthngtoprepare = false;
         if(ordersToPrepare.size()>0) {
@@ -164,6 +165,7 @@ public class Main {
     }
 
     static void afficherBar(Scanner scanner){
+        clearConsole();
         boolean smthngtoprepare = false;
         System.out.println("--- BAR - PREPARATION ---");
         if(ordersToPrepare.size()>0) {
@@ -210,12 +212,14 @@ public class Main {
     }
 
     static void monitorRestaurant(Scanner scanner){
+        clearConsole();
         String element, date;
         Scanner tempsc = new Scanner(System.in);
 
         System.out.println("--- MONITORING RESTAURANT ---");
         System.out.println("Nombre de commandes : "+nbCommande+" - C.A de la journée: "+chiffreAffaire);
 
+        //--- PARTIE IMPRESSION LISTE COURSES---
         System.out.println("Appuyez sur P si vous voulez imprimer la liste de course pour demain, B sinon pour retourner au sélécteur d'écran");
         char print = scanner.next().charAt(0);
 
@@ -226,7 +230,7 @@ public class Main {
 
             Path path = Paths.get("src/listes_course/liste_"+date+".txt");
 
-            try (FileOutputStream stream = new FileOutputStream(path.toString())){
+            try (FileOutputStream fout = new FileOutputStream(path.toString())){ //try-with-ressources pour fermer le fichier automatiquement
                 System.out.println("Liste de courses : ");
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
@@ -253,17 +257,19 @@ public class Main {
             }
         }
         else if(print=='B' || print=='b'){
-            selectScreen();
+            selectScreen();//On retourne an arrière si on ne veut pas print la
         }
         goBack(scanner);
     }
 
     static void manageEmployees(Scanner scanner){
+        clearConsole();
         System.out.println("--- AJOUT OU RETRAIT D'EMPLOYES ---");
         goBack(scanner);
     }
 
     static void manageStock(Scanner scanner){
+        clearConsole();
         System.out.println("--- GERER LE STOCK ---\n");
         System.out.println("1 - AJOUTER");
         System.out.println("2 - RETIRER");
@@ -293,11 +299,13 @@ public class Main {
         goBack(scanner);
     }
 
+    /*
     static void manageDayTeam(Scanner scanner){
+        clearConsole();
         System.out.println("--- PROGRAMMATION EMPLOYES POUR LA SOIREE ---");
         goBack(scanner);
     }
-
+*/
     static void finaliserCommande(int idorder,Commande c){
         System.out.println("Commande N°"+idorder+" totalement servie !");
 
@@ -318,7 +326,6 @@ public class Main {
     static void imprimerTicket(Commande c){
         Path path = Paths.get("src/tickets_de_caisse/ticket_commande"+c.id+".txt");
         try (FileOutputStream fout = new FileOutputStream(path.toString())){
-                System.out.println("Fichier crée " + fout);
                 //Ecriture :
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString(),true))){
                     writer.write("Commande n° : "+c.id);
@@ -355,6 +362,10 @@ public class Main {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+    }
+    static void clearConsole(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
 
