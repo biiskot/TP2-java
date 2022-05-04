@@ -1,5 +1,4 @@
 Commande n° : 2
----FajitasBoeuf --- 11 €
 ---Eau --- 0 €
 
-TOTAL : 11€
+TOTAL : 0€

@@ -1,5 +1,17 @@
 Commande n° : 1
 ---BurgerComplet --- 12 €
----FajitasPoulet --- 11 €
+---BurgerComplet --- 12 €
+---BurgerComplet --- 12 €
+---BurgerComplet --- 12 €
+---BurgerComplet --- 12 €
+---BurgerComplet --- 12 €
+---BurgerComplet --- 12 €
+---Biere --- 5 €
+---Biere --- 5 €
+---Biere --- 5 €
+---Biere --- 5 €
+---Biere --- 5 €
+---Biere --- 5 €
+---Biere --- 5 €
 
-TOTAL : 23€
+Menu Centenaire, TOTAL : 100€

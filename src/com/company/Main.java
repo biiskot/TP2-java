@@ -67,7 +67,11 @@ public class Main {
             i++;
             System.out.println(i + " " + n);
         }
-        System.out.println("--- Entrez le numéro correspondant au plat pour l'ajouter a la commande ---");
+        System.out.println("Voulez vous un menu centenaire Y/N");
+        char menu = scanner.next().charAt(0);
+        if(menu == 'Y' || menu=='y') menuCentenaire(scanner,commande);
+
+        System.out.println("--- Entrez le numéro correspondant à la conso pour l'ajouter a la commande ---");
         System.out.println("--- Entrez 0 si la prise de commande est terminée ---");
         do {
             System.out.print("==> ");
@@ -78,7 +82,7 @@ public class Main {
                 System.out.println("Entrez un nombre entier");
                 scanner.nextLine();
             }
-                if (choix > 0) {
+                if (choix > 0 && choix <= (CarteBoissons.listeboissons.size()+CartePlats.listeplats.size())) {
                     commande.listeIdsConsos.add(choix - 1);// On ajoute l'indice des plats à commander dans la liste
                     if(choix >= CartePlats.listeplats.size()+1){
                         commande.containsBoisson = true;
@@ -270,32 +274,39 @@ public class Main {
 
     static void manageStock(Scanner scanner){
         clearConsole();
+        boolean fini = false;
         System.out.println("--- GERER LE STOCK ---\n");
         System.out.println("1 - AJOUTER");
         System.out.println("2 - RETIRER");
         int choix = scanner.nextInt();
-        int i = 0;
+        int i;
         List<String> tabtmp = new ArrayList<>();
+        while(!fini) {
+            i = 0;
+            System.out.println("Choisissez un ingrédient");
+            for (Map.Entry<String, Integer> n : Inventaire.stockIngredients.entrySet()) {
+                tabtmp.add(n.getKey());
+                i++;
+                System.out.println(i + " " + n);
+            }
+            int choixIng = scanner.nextInt();
 
-        System.out.println("Choisissez un ingrédient");
-        for(Map.Entry<String, Integer> n : Inventaire.stockIngredients.entrySet()){
-            tabtmp.add(n.getKey());
-            i++;
-            System.out.println(i +" " + n);
+            System.out.println("Entrez la quantité à ajouter ou retirer ==> ");
+
+            int qty = scanner.nextInt();
+
+            if (choix == 1) {
+                Inventaire.addItem(tabtmp.get(choixIng - 1), qty);
+            } else if (choix == 2) {
+                Inventaire.removeItem(tabtmp.get(choixIng - 1), qty);
+            }
+            Inventaire.afficherStock();
+            System.out.println("Appuyez sur 1 pour continuer, 0 sinon");
+            int c = scanner.nextInt();
+            if(c==0){
+                fini = true;
+            }
         }
-        int choixIng = scanner.nextInt();
-
-        System.out.println("Entrez la quantité à ajouter ou retirer ==> ");
-
-        int qty = scanner.nextInt();
-
-        if(choix == 1){
-           Inventaire.addItem(tabtmp.get(choixIng-1),qty);
-        }
-        else if(choix == 2){
-          Inventaire.removeItem(tabtmp.get(choixIng-1),qty);
-        }
-        Inventaire.afficherStock();
         goBack(scanner);
     }
 
@@ -335,7 +346,10 @@ public class Main {
                         writer.newLine();
                     }
                     writer.newLine();
-                    writer.write("TOTAL : "+c.addition+"€");
+                    if(c.menuCentenaire)
+                        writer.write("Menu Centenaire, TOTAL : "+c.addition+"€");
+                    else
+                        writer.write("Menu Centenaire, TOTAL : "+c.addition+"€");
                    // writer.close(); pas utile avec try-with-ressources
                     System.out.println("Ecriture effectuée");
                 } catch (IOException e) {
@@ -347,6 +361,65 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    static void menuCentenaire(Scanner scanner, Commande commande){
+        int choix=-1;
+        int nbboissons=0,nbplats=0;
+        boolean boolFin = false;
+        commande.menuCentenaire = true;//On indique que la commande s'agit d'un menu centenaire
+
+        System.out.println("--- Entrez le numéro correspondant à la conso pour l'ajouter a la commande ---");
+        do {
+            if(nbboissons>=7){
+                System.out.println("Attention toutes les boissons ont été choisies, séléctionnez uniquement un plat");
+            }
+            if(nbplats>=7){
+                System.out.println("Attention tous les plats ont été choisis, séléctionnez uniquement une boisson");
+            }
+
+            System.out.print("==> ");
+            if(scanner.hasNextInt() && nbboissons <=7 && nbplats <=7) {
+                choix = scanner.nextInt();
+            }
+            else {
+                System.out.println("Réessayez");
+                scanner.nextLine();
+            }
+            if (choix > 0 && choix <= (CarteBoissons.listeboissons.size()+CartePlats.listeplats.size())) {
+                commande.listeIdsConsos.add(choix - 1);// On ajoute l'indice des plats à commander dans la liste
+                if(choix >= CartePlats.listeplats.size()+1){
+                    commande.containsBoisson = true;
+                    nbboissons++;
+                }
+                if(choix < CartePlats.listeplats.size()+1){
+                    commande.containsPlat = true;
+                    nbplats++;
+                }
+            }
+            else {
+                System.out.println("Entry incorrect");
+            }
+            //          --- CHECK SI COMMANDE FINIE--
+            if (nbplats >= 7 && nbboissons >=7) {
+                System.out.println("Commande terminée");
+                //On ajoute la commande a la liste à preparer
+                ordersToPrepare.put(commande.id, commande);
+                //On incrémente le nb de commandes pour les id/numeros de commandes
+                nbCommande++;
+                boolFin = true; //Si commande finie on sort de la boucle
+                System.out.println("Appuyez sur B pour retourner en arrière ou sur P pour prendre une autre commande");
+                char bp = scanner.next().charAt(0);
+                if (bp == 'B' || bp == 'b') {
+                    selectScreen();
+                } else if (bp == 'p' || bp == 'P') {
+                    priseCommande(scanner);
+                }
+            }
+
+            choix = -1;
+        }while(!boolFin);
+    }
+
     static void goBack(Scanner sc){
         System.out.println("Appuyez sur B pour retourner en arrière");
         try{

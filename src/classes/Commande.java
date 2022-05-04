@@ -7,7 +7,7 @@ public class Commande {
     public List<Integer> listeIdsConsos = new ArrayList<>();
     public List<String>ticketCaisse = new ArrayList<>();
     public int id, addition;
-    public boolean platsReady = false, boissonsReady = false, containsBoisson = false, containsPlat = false;
+    public boolean platsReady = false, boissonsReady = false, containsBoisson = false, containsPlat = false, menuCentenaire = false;
     public Commande(int id){
         this.id = id;
     }
@@ -18,9 +18,15 @@ public class Commande {
         //On build
         for(int n : this.listeIdsConsos){
           if (n >= CartePlats.listeplats.size()){
-              obj = FactoryConsommable.Build(CarteBoissons.listeboissons.get(n-11));
+              obj = FactoryConsommable.Build(CarteBoissons.listeboissons.get(n-CartePlats.listeplats.size()));
               conso = obj.getClass().getSimpleName()+" --- "+obj.prix+" €";//String avec le nom de la conso et son prix
-              this.addition+=obj.prix;
+              //Si menu centenaire, on fixe l'addition à 100
+              if(this.menuCentenaire){
+                  addition = 100;
+              }
+              else {
+                  this.addition+=obj.prix;
+              }
               ticketCaisse.add(conso);
           }
         }
@@ -34,7 +40,13 @@ public void servirPlats(){
           if (n < CartePlats.listeplats.size()){
                 obj = FactoryConsommable.Build(CartePlats.listeplats.get(n));
                 conso = obj.getClass().getSimpleName()+" --- "+obj.prix+" €";//String avec le nom de la conso et son prix
-                this.addition+=obj.prix;
+                  //Si menu centenaire, on fixe l'addition à 100
+                  if(this.menuCentenaire){
+                      addition = 100;
+                  }
+                  else {
+                      this.addition+=obj.prix;
+                  }
                 ticketCaisse.add(conso);
             }
         }
